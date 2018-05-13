@@ -16,7 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+jQuery.ajaxSetup({async:false});
+
 var app = {
+    apiServerUrl: 'http://1255053.ao306081.web.hosting-test.net/api.php',
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -37,13 +41,23 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
+        this.loadMainPage();
         console.log('Received Event: ' + id);
+    },
+
+    loadMainPage: function () {
+        $.get(this.apiServerUrl, function (response) {
+            let table = $('<table>');
+            for (let item of response) {
+                let tr = $('<tr>');
+                tr.append('<td>' + item.id + '</td>');
+                tr.append('<td>' + item.player + '</td>');
+                tr.append('<td>' + item.exp + '</td>');
+                tr.append('<td>' + item.kredits + '</td>');
+                table.append(tr);
+                console.log(item);
+            }
+            $('.content').append(table);
+        }, 'json');
     }
 };
